@@ -1,50 +1,19 @@
 const express = require('express');
 const router = express.Router();
-const Data = require('../models/models');
+const controllers = require('../controllers/controllers');
 
 //HANDLERS
 //GET prendi info
-router.get('/lorem', function(req, res, next){
-    Data.find({/*se vuoto, cerca tutti*/}).then(function(data){
-        res.send(data);
-    });
-});
+router.get('/', controllers.getAllData);
 
-//HANDLERS
 //POST crea nuove info
- 
-router.post('/lorem', function(req, res, next){
+router.post('/', controllers.newData);
 
-    Data.create(req.body).then(function(data){
-        res.send(data);
-    }).catch(next); 
-
-});
-
-//HANDLERS
 //PUT aggiorna info
-router.put('/lorem/:id', function(req, res, next){
-    Data.findByIdAndUpdate({
-        _id:req.params.id
-    }, req.body).then(function(){
-        Data.findOne({
-            _id:req.params.id
-        }).then(function(data){
-        res.send(data);
-        });
-    });
-});
+router.put('/:id', controllers.updateData);
 
-//HANDLERS
 //DELETE
-router.delete('/lorem/:id', function(req, res, next){
-    Data.findByIdAndRemove({
-        _id:req.params.id
-    }).then(function(data){
-        res.send(data);
-    });
-    res.send({type: 'DELETE'});
-});
+router.delete('/:id', controllers.deleteData);
 
 
 module.exports = router;

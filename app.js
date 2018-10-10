@@ -8,6 +8,7 @@ const app = express();
 
 // connect to mongo il db non esiste viene creato da mongoose
 mongoose.connect('mongodb://localhost/dataUser', {useNewUrlParser:true});
+// aggiornamento promise di mongoose
 mongoose.Promise = global.Promise;
 
 //PARSER 
@@ -25,7 +26,7 @@ app.use((req, res, next) => {
 });
 
 //ERROR handling MIDDLEWARE
-app.use(function(err, req, res, next){
+app.use((err, req, res, next) => {
     const status = err.status || 500;
     res.status(status).send({error: err.message});
 

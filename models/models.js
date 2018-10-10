@@ -19,7 +19,6 @@ const dataSchema = new Schema({
 
 });
 
-
 // modello, il nome data viene pluralizzato da
 // mongodb diventando datas, il nome della collezione
 const Data = mongoose.model('data', dataSchema);
