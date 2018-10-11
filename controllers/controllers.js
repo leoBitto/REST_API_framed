@@ -25,6 +25,18 @@ module.exports = {
         await Data.findByIdAndRemove({_id:req.params.id});
         res.status(200).send({type: 'DELETE'});
 
+    },
+
+    signUp: async (req, res, next) => {
+        // validation of email & password
+        // req.value.body
+        console.log('signup');
+    },
+
+    signIn: async (req, res, next) => {
+        // passport.js
+        // generate tokens
+        console.log('signin');
     }
 
 }

@@ -41,6 +41,8 @@ richiesta e una risposta. i middleware usati sono :
 
     - routes, elencano i vari URL a cui la API risponde;
 
+    - joi, oggetto che permette di validare i dati in arrivo dal client;
+
     - 404
 
     - error handlers, devono seguire le routes.
@@ -52,3 +54,5 @@ richiesta e una risposta. i middleware usati sono :
 
 process.env.port è una variabile globale trovata in alcuni ambienti server collegata all porte adibita all'ascolto
 
+AUTENTICAZIONE
+nella api viene usato il middleware joi che permette di validare dei valori quando si crea un nuovo useri dati in arrivo dal client. i file joi sono allinterno della cartella helpers
