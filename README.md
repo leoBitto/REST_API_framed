@@ -13,17 +13,18 @@ una rest api che usa frameworks come express, mongoose, body parser. creata come
  
 
 SYNC VS ASYNC
-  esistono tre modi per agire in modo asincrono:
-      0) [vanilla js] == XMLHttpRequest() ;
-      1) [Callback] == ('', function(){}), una funzione 
+  -esistono tre modi per agire in modo asincrono:
+     - 0) [vanilla js] == XMLHttpRequest() ;
+     - 1) [Callback] == ('', function(){}), una funzione 
                       chiamata come se fosse un parametro;
-  ES6.2) [Promises] == .then(function).catch(function(err)), 
+  -ES6.2) [Promises] == .then(function).catch(function(err)), 
                       un oggetto che rappresenta un processo
                       non ancora completamente eseguito;
-  ES6.3) [Generators] == function* name (){}, funzioni che 
+  -ES6.3) [Generators] == function* name (){}, funzioni che 
                           possono essere messe in pausa tramite
                           la parola yield; 
-  ES6.4) [Async/Await] == async await , queste due parole                           vengono usate per rendere una                             funzione asincrona e fermare una                          linea di codice rispettivamente.
+  -ES6.4) [Async/Await] == async await , queste due parole vengono usate per rendere una funzione 
+                          asincrona e fermare una linea di codice rispettivamente.
                           Usa una struttura 
                           try{} catch(err){} per gestire gli error;
 
