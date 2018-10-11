@@ -12,8 +12,8 @@ una rest api che usa frameworks come express, mongoose, body parser. creata come
  essere settata a quella globale. 
  
 
-                 SYNC VS ASYNC
-esistono tre modi per agire in modo asincrono:
+SYNC VS ASYNC
+/*esistono tre modi per agire in modo asincrono:
     0) [vanilla js] == XMLHttpRequest() ;
     1) [Callback] == ('', function(){}), una funzione 
                     chiamata come se fosse un parametro;
@@ -26,9 +26,9 @@ ES6.3) [Generators] == function* name (){}, funzioni che
 ES6.4) [Async/Await] == async await , queste due parole                           vengono usate per rendere una                             funzione asincrona e fermare una                          linea di codice rispettivamente.
                         Usa una struttura 
                         try{} catch(err){} per gestire gli error;
+*/
 
-
-                MIDDLEWARE
+MIDDLEWARE
 i file js vengono eseguiti sequenzialmente, dunque 
 l'ordine con cui vengono disposti i middleware è 
 importante. Viene usato .use per richiedere tutto il 
