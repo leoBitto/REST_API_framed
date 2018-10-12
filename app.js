@@ -7,7 +7,10 @@ const routes = require('./routes/api_routes');
 const app = express();
 
 // connect to mongo il db non esiste viene creato da mongoose
-mongoose.connect('mongodb://localhost/dataUser', {useNewUrlParser:true});
+// URI mongodb è il tipo di db
+mongoose.connect('mongodb://localhost/dataUser', {
+                useNewUrlParser:true
+            });
 // aggiornamento promise di mongoose
 mongoose.Promise = global.Promise;
 

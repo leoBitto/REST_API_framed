@@ -56,3 +56,16 @@ process.env.port è una variabile globale trovata in alcuni ambienti server coll
 
 AUTENTICAZIONE
 nella api viene usato il middleware joi che permette di validare dei valori quando si crea un nuovo useri dati in arrivo dal client. i file joi sono allinterno della cartella helpers
+ 
+JSON Web Token
+per garantire la sicurezza durante lo scambio di informazioni tra client e server vengono usati i JWT, i JSON Web Token, degli oggetti JSON che contengono informazioni legate alla sicurezza. le informazioni che è possibile passare nell'oggetto aiutano permettono di conoscere il client con cui si sta comunicando e verificare se qualcuno ha intercettato il token e lo ha modificato. i JWT sono composti da tre parti:
+  -headers
+  -payload
+  -signature
+le tre parti vengono gestite tramite un modulo chiamato jsonwebtoken. il modulo permette di creare facilmente il token dando la possibilita di usare tre modi per scrivere il payload. 
+  -registered, permette di usare delle informazioni prestabilite ad esempio issued, un nome solitamente il nome del server o dell'applicazione 
+  -public
+  -private
+l'header e la signature vengono gestite dal modulo.
+
+PASSPORT

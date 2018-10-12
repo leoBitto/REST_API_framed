@@ -1,5 +1,21 @@
 const Data = require('../models/models');
+const JWT = require('jsonwebtoken');
+const { JWT_SECRET } = require('../configuration/conf');
 
+    signToken = user => {
+        //crea il token JWT
+        return JWT.sign({
+            iss:'bay',
+            sub: user.id,
+            iat: new Date().getTime(),// tempo attuale, in cui viene creato i token
+            exp: new Date().setDate(new Date().getDate() + 1) 
+            // crea un nuovo oggetto data, lo setta a una data
+            // creando un nuovo oggetto data e settato alla data corrente
+            // a cui viene aggiunto un giorno, la data di scadenza 
+            // infatti è il giorno dopo della creazione del token
+        }, JWT_SECRET);
+    }
+    
 
 module.exports = {
 
@@ -29,8 +45,33 @@ module.exports = {
 
     signUp: async (req, res, next) => {
         // validation of email & password
-        // req.value.body
+        // req.value.body grazie a joi
+        // non viene usato es6...
         console.log('signup');
+        const name = req.body.name;
+        const email = req.body.email;
+        const password = req.body.password;
+
+        // controlla che non ci sia un altro account con la stessa mail
+        // in quel caso ritorna un errore
+        const foundUser = await Data.findOne({email:email});
+        if(foundUser){
+           return res.status(409).send({error:'Email already used'})
+        }
+        // crea il nuovo utente nel db
+        const newUser = new Data({
+            name: name,
+            email: email,
+            password: password
+        });
+        await newUser.save();
+
+        // genera il token 
+        const token = signToken(newUser);
+
+        //risponde con un token abbreviazione con ES6
+        res.status(200).json({token});
+        
     },
 
     signIn: async (req, res, next) => {

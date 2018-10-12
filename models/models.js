@@ -6,16 +6,22 @@ const dataSchema = new Schema({
     name:{
         type: String,
         require:[true, 'il nome è richiesto']
-
     },
     surname:{
         type:String
     }, 
+    email:{
+        type:String,
+        require:[true, 'la mail è richiesta']
+    },
+    password:{
+        type:String,
+        require:[true, 'la password è richiesta']
+    },
     available:{
         type:Boolean,
         default:false
     }
-
 
 });
 
