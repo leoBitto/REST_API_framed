@@ -47,11 +47,9 @@ module.exports = {
         // validation of email & password
         // req.value.body grazie a joi
         // non viene usato es6...
-        console.log('signup');
         const name = req.body.name;
         const email = req.body.email;
         const password = req.body.password;
-
         // controlla che non ci sia un altro account con la stessa mail
         // in quel caso ritorna un errore
         const foundUser = await Data.findOne({email:email});
@@ -77,7 +75,13 @@ module.exports = {
     signIn: async (req, res, next) => {
         // passport.js
         // generate tokens
-        console.log('signin');
+        const token = signToken(req.user);
+        // rispondi con il token
+        res.status(200).json({ token });
+    },
+
+    userContent: async (req, res, next) => {
+        res.json({ secret:'resouce'});
     }
 
 }

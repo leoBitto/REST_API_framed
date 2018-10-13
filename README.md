@@ -69,3 +69,4 @@ le tre parti vengono gestite tramite un modulo chiamato jsonwebtoken. il modulo 
 l'header e la signature vengono gestite dal modulo.
 
 PASSPORT
+passport usa una delle molte strategie che mette a disposizione per implementare l'autorizzazione. quella basata sui token richiede di specificare le parti del token e rispondere con l'utente
