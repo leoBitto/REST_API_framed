@@ -71,3 +71,10 @@ l'header e la signature vengono gestite dal modulo.
 
 PASSPORT
 passport usa una delle molte strategie che mette a disposizione per implementare l'autorizzazione. quella basata sui token richiede di specificare le parti del token e rispondere con l'utente
+
+Bcrypt
+bcrypt viene usato per nascondere la password, usa le tecniche di salting e hashin per permettono di criptare la stringa usando i valori dell'utente, payload, e una stringa segreta, la signature.
+
+Funzionamento autorizzazione
+i token vengono generati quando un utente crea un account oppure quando vuole accedere all'applicazione. durante la creazione di un account si usa una strategia di passport locale e si crea un nuovo utente in mongo, poi si ritorna al client un token. 
+il token viene usato dal client ogni volta che richiede una risorsa riservata agli utenti registrati. viene inserito nel campo header delle richieste con etichetta 'Authorization'. il token viene preso e verificato che sia valido tramite passport usando la strategia jwt. se tutto coincide viene fornita la risorsa al client in caso contrario viene segnalato un errore.
