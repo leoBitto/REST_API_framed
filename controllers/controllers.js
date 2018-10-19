@@ -45,7 +45,7 @@ module.exports = {
 
     signUp: async (req, res, next) => {
         // validation of email & password
-        // req.value.body grazie a joi
+        // req.value.body grazie a joi.
         // non viene usato es6...
         const name = req.body.name;
         const email = req.body.email;
