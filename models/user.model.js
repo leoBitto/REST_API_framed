@@ -3,30 +3,46 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcryptjs');
 
 // schema , struttura dei dati
-const dataSchema = new Schema({
+const userSchema = new Schema({
     name:{
         type: String,
-        require:[true, 'il nome è richiesto']
+        required:[true, 'il nome è richiesto'],
+        index:true
     },
     surname:{
         type:String
     }, 
     email:{
         type:String,
-        require:[true, 'la mail è richiesta']
+        unique:true,
+        required:[true, 'la mail è richiesta'],
+        index:true
     },
     password:{
         type:String,
-        require:[true, 'la password è richiesta']
+        required:[true, 'la password è richiesta']
     },
     available:{
         type:Boolean,
         default:false
+    },
+    hash:{
+        type:String
+    },
+    salt:{
+        type: String
+    },
+    createdDate:{
+        type: Date, 
+        default: Date.now
+    },
+    lastLoggedIn:{
+        type:Date
     }
-
 });
 
-dataSchema.pre('save', async function(next){
+// prima di salvare l'utente crypta la pwd
+userSchema.pre('save', async function(next){
     try {
         //genera un salt
         const salt = await bcrypt.genSalt(10);
@@ -41,16 +57,13 @@ dataSchema.pre('save', async function(next){
     }
 });
 
-dataSchema.methods.isValidPassword = async function(newPassword){
+userSchema.methods.isValidPassword = async function(newPassword){
     try {
         return await bcrypt.compare(newPassword, this.password);
     } catch (error) {
         throw new Error(error);
     }
 }
-// modello, il nome data viene pluralizzato da
+// esporta modello, il nome data viene pluralizzato da
 // mongodb diventando datas, il nome della collezione
-const Data = mongoose.model('data', dataSchema);
-
-//esporta il modello
-module.exports = Data;
+module.exports = mongoose.model('user', userSchema);

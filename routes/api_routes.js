@@ -3,36 +3,40 @@ const router = express.Router();
 const {validateBody, schemas} = require('../helpers/joischema');
 const controllers = require('../controllers/controllers');
 const passport = require('passport');
-const passportConf = require('../passport');
+const passportConf = require('../helpers/passport');
 
-//HANDLERS
-//GET prendi info
-router.get('/', controllers.getAllData);
+/*to do
+add passport redirections
 
-//POST crea nuove info
-router.post('/', controllers.newData);
+router.put('/:id', update);
+router.delete('/:id', _delete);
+*/
 
-//PUT aggiorna info
-router.put('/:id', controllers.updateData);
-
-//DELETE
-router.delete('/:id', controllers.deleteData);
-
-//POST signup
-// prima di chiamare l'handler valida il req.body
 router.post('/signup',
+  //joi schema da sostituire
   validateBody(schemas.authSchema), 
   controllers.signUp);
 
-//POST signin
-router.post('/signin',
+router.post('/login',
   validateBody(schemas.authSchema),
   passport.authenticate('local', {session:false}),
-  controllers.signIn);
+  controllers.logIn);
 
-//GET user content
-router.get('/secret', 
+router.post('/loginAdmin',
+  validateBody(schemas.authSchema),
+  passport.authenticate('local', {session:false}),
+  controllers.logInAdmin);
+
+router.get('/:id', 
   passport.authenticate('jwt', {session:false}),
   controllers.userContent);
+
+router.put('/:id', 
+  passport.authenticate('jwt', {session:false}),
+  controllers.update);
+
+router.delete('/:id', 
+  passport.authenticate('jwt', {session:false}),      
+  controllers.delete);
 
 module.exports = router;

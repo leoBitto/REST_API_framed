@@ -1,87 +1,164 @@
-const Data = require('../models/models');
+const User = require('../models/user.model');
 const JWT = require('jsonwebtoken');
-const { JWT_SECRET } = require('../configuration/conf');
+const mongoose = require('mongoose');
+const { URL, JWT_SECRET } = require('../configuration/conf');
+const userServices = require('../models/user.service');
 
-    signToken = user => {
-        //crea il token JWT
-        return JWT.sign({
-            iss:'bay',
-            sub: user.id,
-            iat: new Date().getTime(),// tempo attuale, in cui viene creato i token
-            exp: new Date().setDate(new Date().getDate() + 1) 
-            // crea un nuovo oggetto data, lo setta a una data
-            // creando un nuovo oggetto data e settato alla data corrente
-            // a cui viene aggiunto un giorno, la data di scadenza 
-            // infatti è il giorno dopo della creazione del token
-        }, JWT_SECRET);
-    }
-    
+signToken = user => {
+    //crea il token JWT
+    return JWT.sign({
+        iss:'bay',
+        sub: user.id,
+        name: user.name,
+        email: user.email,
+        iat: new Date().getTime(),// tempo attuale, in cui viene creato i token
+        exp: new Date().setDate(new Date().getDate() + 1) 
+        // crea un nuovo oggetto data, lo setta a una data
+        // creando un nuovo oggetto data e settato alla data corrente
+        // a cui viene aggiunto un giorno, la data di scadenza 
+        // infatti è il giorno dopo della creazione del token
+    }, JWT_SECRET);
+}
+
 
 module.exports = {
 
-    getAllData: async (req, res, next) => {
-        const allData = await Data.find({/*se vuoto, cerca tutti*/});
-        res.status(200).json(allData);
-
-    },
-
-    newData: async (req, res, next) => {
-        const postedData = await Data.create(req.body);
-        res.status(200).json(postedData);
-     
-    },
-
-    updateData: async (req, res, next) => {
-        const resData = await Data.findByIdAndUpdate({_id:req.params.id}, req.body, {new:true});
-        res.status(200).json(resData);
-              
-    },
-
-    deleteData: async (req, res, next) => {
-        await Data.findByIdAndRemove({_id:req.params.id});
-        res.status(200).send({type: 'DELETE'});
-
+    logout: async (req, res, next) =>{
+        try {
+            //crea-connetti al db
+            await mongoose.close();     
+        }catch (err){
+            console.log(err.stack);
+            next(err);
+        }
     },
 
     signUp: async (req, res, next) => {
-        // validation of email & password
-        // req.value.body grazie a joi.
-        // non viene usato es6...
-        const name = req.body.name;
-        const email = req.body.email;
-        const password = req.body.password;
-        // controlla che non ci sia un altro account con la stessa mail
-        // in quel caso ritorna un errore
-        const foundUser = await Data.findOne({email:email});
-        if(foundUser){
-           return res.status(409).send({error:'Email already used'})
+        try {
+            // validation of email & password
+            // req.value.body grazie a joi.
+            // non viene pienamente usato es6
+            const newUser = new User ({
+                 name : req.body.name,
+                 email : req.body.email,
+                 password : req.body.password
+            });
+
+            //crea-connetti al db
+            await mongoose.connect(URL, {
+                useNewUrlParser:true,
+                autoIndex: false,
+                //user:this.name,
+                //pass:this.pwd,
+                dbName: newUser.name
+            });
+            
+            // controlla che non ci sia un altro account con la stessa mail
+            // in quel caso ritorna un errore
+            //if(await userServices.getByMail(newUser.email)){
+              //  return res.status(409).send({error:'Email already used'})
+            //}
+
+            // crea un nuovo utente in admin
+            await userServices.createUser(newUser);
+           
+            // genera il token 
+            const token = signToken(newUser);
+            //risponde con il token abbreviazione con ES6
+            res.status(200).json({token});
+
+        }catch (err){
+            console.log(err.stack);
+            next(err);
         }
-        // crea il nuovo utente nel db
-        const newUser = new Data({
-            name: name,
-            email: email,
-            password: password
-        });
-        await newUser.save();
-
-        // genera il token 
-        const token = signToken(newUser);
-
-        //risponde con un token abbreviazione con ES6
-        res.status(200).json({token});
-        
     },
 
-    signIn: async (req, res, next) => {
-        // passport.js
+    logIn: async (req, res, next) => {
+       try { 
+       /* const encodedName = encodeURIComponent(name);
+        const encodedPwd = encodeURIComponent(pwd);
+        const authMechanism = 'DEFAULT';
+       */
+        const logUser = new User ({
+            name : req.body.name,
+            password : req.body.password
+        });
+
+       //crea-connetti al db
+       await mongoose.connect(URL, {
+           useNewUrlParser:true,
+           autoIndex: false,
+           //user:this.name,
+           //pass:this.pwd,
+           dbName: logUser.name
+       });
+    
         // generate tokens
         const token = signToken(req.user);
         // rispondi con il token
         res.status(200).json({ token });
+
+        }catch(err){
+            console.log(err.stack);
+            next(err);
+        }
     },
-
+    logInAdmin: async (req, res, next) => {
+        try { 
+        /* const encodedName = encodeURIComponent(name);
+         const encodedPwd = encodeURIComponent(pwd);
+         const authMechanism = 'DEFAULT';
+        */
+         const logUser = new User ({
+             name : req.body.name,
+             password : req.body.password
+         });
+ 
+        //crea-connetti al db
+        await mongoose.connect(URL, {
+            useNewUrlParser:true,
+            autoIndex: false,
+            //user:this.name,
+            //pass:this.pwd,
+            dbName: logUser.name
+        });
+     
+         // generate tokens
+         const token = signToken(req.user);
+         // rispondi con il token
+         res.status(200).json({ token });
+ 
+         }catch(err){
+             console.log(err.stack);
+             next(err);
+         }
+     },
+    // per ogni contenuto dell'utente
+    //(collezione) deve esserci una route
+    // quindi un metodo
+    // quindi una interfaccia col modello user service
     userContent: async (req, res, next) => {
-        res.json({ secret:'resouce'});
+        try{
+            res.json({ secret:'resouce'});
+        }catch(err){
+            console.log(err.stack);
+            next(err);
+        }
+    },
+    update: async (req, res, next) => {
+        try{
+            res.json({ secret:'resouce'});
+        }catch(err){
+            console.log(err.stack);
+            next(err);
+        }
+    }, 
+    delete: async (req, res, next) => {
+        try{
+            res.json({ secret:'resouce'});
+        }catch(err){
+            console.log(err.stack);
+            next(err);
+        }
     }
-
 }
