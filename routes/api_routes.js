@@ -22,10 +22,8 @@ router.post('/login',
   passport.authenticate('local', {session:false}),
   controllers.logIn);
 
-router.post('/loginAdmin',
-  validateBody(schemas.authSchema),
-  passport.authenticate('local', {session:false}),
-  controllers.logInAdmin);
+router.post('/logout',
+  controllers.logOut);
 
 router.get('/:id', 
   passport.authenticate('jwt', {session:false}),

@@ -2,7 +2,7 @@ const User = require('../models/user.model');
 const JWT = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const { URL, JWT_SECRET } = require('../configuration/conf');
-const userServices = require('../models/user.service');
+
 
 signToken = user => {
     //crea il token JWT
@@ -23,10 +23,11 @@ signToken = user => {
 
 module.exports = {
 
-    logout: async (req, res, next) =>{
+    logOut: async (req, res, next) =>{
         try {
-            //crea-connetti al db
-            await mongoose.close();     
+            //disconnetti db
+            await mongoose.connection.close();  
+            res.status(200).json({message:'connessione chiusa'});   
         }catch (err){
             console.log(err.stack);
             next(err);
@@ -52,16 +53,15 @@ module.exports = {
                 //pass:this.pwd,
                 dbName: newUser.name
             });
-            
-            // controlla che non ci sia un altro account con la stessa mail
-            // in quel caso ritorna un errore
-            //if(await userServices.getByMail(newUser.email)){
-              //  return res.status(409).send({error:'Email already used'})
-            //}
 
-            // crea un nuovo utente in admin
-            await userServices.createUser(newUser);
-           
+            // crea le collections
+            await User.create(newUser, err =>{if(err) throw err ;});
+            //gridFS
+            //await Images.create(newUser, err =>{if(err) throw err ;});
+            //await Documents.create(newUser, err =>{if(err) throw err ;});
+            //await Videos.create(newUser, err =>{if(err) throw err ;});
+            //await Calendar.create(newUser, err =>{if(err) throw err ;});
+
             // genera il token 
             const token = signToken(newUser);
             //risponde con il token abbreviazione con ES6
@@ -92,7 +92,11 @@ module.exports = {
            //pass:this.pwd,
            dbName: logUser.name
        });
-    
+       // controlla che non ci sia un altro account con la stessa mail
+            // in quel caso ritorna un errore
+            //if(await userServices.getByMail(newUser.email)){
+              //  return res.status(409).send({error:'Email already used'})
+            //}
         // generate tokens
         const token = signToken(req.user);
         // rispondi con il token
@@ -103,36 +107,7 @@ module.exports = {
             next(err);
         }
     },
-    logInAdmin: async (req, res, next) => {
-        try { 
-        /* const encodedName = encodeURIComponent(name);
-         const encodedPwd = encodeURIComponent(pwd);
-         const authMechanism = 'DEFAULT';
-        */
-         const logUser = new User ({
-             name : req.body.name,
-             password : req.body.password
-         });
- 
-        //crea-connetti al db
-        await mongoose.connect(URL, {
-            useNewUrlParser:true,
-            autoIndex: false,
-            //user:this.name,
-            //pass:this.pwd,
-            dbName: logUser.name
-        });
-     
-         // generate tokens
-         const token = signToken(req.user);
-         // rispondi con il token
-         res.status(200).json({ token });
- 
-         }catch(err){
-             console.log(err.stack);
-             next(err);
-         }
-     },
+    
     // per ogni contenuto dell'utente
     //(collezione) deve esserci una route
     // quindi un metodo
