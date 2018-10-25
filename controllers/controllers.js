@@ -26,7 +26,7 @@ module.exports = {
     logOut: async (req, res, next) =>{
         try {
             //disconnetti db
-            await mongoose.connection.close();  
+            await mongoose.disconnect();  
             res.status(200).json({message:'connessione chiusa'});   
         }catch (err){
             console.log(err.stack);
