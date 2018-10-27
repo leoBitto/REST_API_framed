@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser  = require('body-parser');
 const mongoose = require('mongoose');
 const routes = require('./routes/api_routes');
+const history = require('connect-history-api-fallback');
 //const Morgan = require('morgan')('dev');
 const errorHandlers = require('./helpers/errorHandlers');
 const {URL}= require('./configuration/conf');
@@ -14,7 +15,7 @@ const server = express();
 
 //LOGGER
 //server.use(Morgan);
-
+server.use(history());
 //PARSER 
 // parser da json(in mongo) a oggetto per essere letto
 server.use(bodyParser.json());
